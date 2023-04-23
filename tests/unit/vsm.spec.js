@@ -1,9 +1,9 @@
-import { mount } from '@vue/test-utils'
+import {mount} from '@vue/test-utils'
 import vsm from '@/vsm.vue'
 
 describe('test vsm component', () => {
     it('updates query params when radio buttons are clicked', async () => {
-        const wrapper = mount(vsm, {
+        const wrappedTestComponent = mount(vsm, {
             global: {
                 mocks: {
                     $route: {
@@ -20,18 +20,18 @@ describe('test vsm component', () => {
             },
         })
 
-        const button = wrapper.find('#scale5')
-        const twoRadio = wrapper.find('#Two');
-        
-        twoRadio.trigger('click');
-        button.trigger('click')
+        expect(wrappedTestComponent.vm.bb).toBe(1)
+        expect(wrappedTestComponent.vm.aa).toBe('1.5')
+        expect(wrappedTestComponent.vm.cc).toBe('hello')
+
+        wrappedTestComponent.find('#Two').trigger('click');
+        wrappedTestComponent.find('#scale5').trigger('click')
 
         setTimeout(() => {
-            expect(wrapper.vm.bb).toBe('5')
-            expect(wrapper.vm.aa).toBe('2')
-            expect(wrapper.vm.cc).toBe('hello')
+            expect(wrappedTestComponent.vm.bb).toBe('5')
+            expect(wrappedTestComponent.vm.aa).toBe('2')
 
-            expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+            expect(wrappedTestComponent.vm.$router.push).toHaveBeenCalledWith({
                 path: '/',
                 query: {
                     bb: '5',
