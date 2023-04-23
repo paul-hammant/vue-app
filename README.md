@@ -11,4 +11,12 @@ python3 -m http.server 8000
 # or alternate from https://gist.github.com/willurd/5720255
 ```
 
-TODO: Needs vue-test-utils unit tests.
+Unit Test:
+    - vue-test-utils used to create unit tests
+    - tests located /tests/unit
+
+    Install dependencies:
+    - npm i
+
+    To run the tests:
+    - npm run test:unit

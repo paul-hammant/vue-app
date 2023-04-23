@@ -1,0 +1,20 @@
+{
+  "name": "vue-app",
+  "scripts": {
+    "test:unit": "vue-cli-service test:unit"
+  },
+  "dependencies": {
+    "@vue/vue3-jest": "^29.2.3",
+    "core-js": "^3.6.5",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-unit-jest": "~5.0.8",
+    "@vue/cli-plugin-vuex": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/test-utils": "^2.0.0-0",
+    "vue3-jest": "^27.0.0-alpha.1"
+  }
+}
