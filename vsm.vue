@@ -54,7 +54,7 @@
               this.cc = this.$route.query.cc || 'hello'
             },
             async updateUrl() {
-              this.$router.push({
+              return this.$router.push({
                   path: '/',
                   query: {
                       bb: this.bb,
@@ -62,7 +62,6 @@
                       cc: this.cc,
                   },
               })
-              return
             },
             updateAA(value){
               this.aa = value
