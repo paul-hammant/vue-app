@@ -1,107 +1,109 @@
 <script>
 
-export default {
-  name: 'A B C',
-  props: {
-    msg: String
-  },
-  directives: {},
-  data() {
-    let ddata = {
-      aa: "1.5",
-      bb: 1,
-      cc: "hello",
-    };if (this.$route.query.cc) {
-      ddata.cc = this.$route.query.cc;
+    export default {
+      
+        name: 'A B C',
+        props: {
+            msg: String,
+        },
+        directives: {},
+        data() {
+            return {
+                aaOptions: [
+                    { label: '1.5', value: 1.5, id: 'OnePointFive' },
+                    { label: '2', value: 2, id: 'Two' },
+                    { label: '10', value: 10, id: 'Ten' },
+                    { label: 'RT', value: 'realtime', id: 'RT' },
+                ],
+                bbOptions: [
+                    { label: '.1', value: 0.1, id: 'scalep1' },
+                    { label: '.5', value: 0.5, id: 'scalep5' },
+                    { label: '1', value: 1, id: 'scale1' },
+                    { label: '5', value: 5, id: 'scale5' },
+                    { label: '10', value: 10, id: 'scale10' },
+                    { label: '50', value: 50, id: 'scale50' },
+                    { label: '100', value: 100, id: 'scale100' },
+                ],
+                aa: 1.5,
+                bb: 1,
+                cc: 'hello',
+            }
+        },
+        computed: {
+            query() {
+                return {
+                    bb: this.bb,
+                    aa: this.aa,
+                    cc: this.cc,
+                }
+            },
+        },
+        mounted() {
+          this.updateDataFromUrlQueryParams()
+          
+          //when change query params update data
+          this.$router.afterEach((to, from) => {
+            this.updateDataFromUrlQueryParams()
+          }); 
+        },
+        methods: {
+            updateDataFromUrlQueryParams(){
+              //update data when component mount checking the route query
+              this.aa = this.$route.query.aa || 1.5
+              this.bb = this.$route.query.bb || 1
+              this.cc = this.$route.query.cc || 'hello'
+            },
+            async updateUrl() {
+              return this.$router.push({
+                  path: '/',
+                  query: {
+                      bb: this.bb,
+                      aa: this.aa,
+                      cc: this.cc,
+                  },
+              })
+            },
+            updateAA(value){
+              this.aa = value
+              this.updateUrl()
+            },
+            updateBB(value){
+              this.bb = value
+              this.updateUrl()
+            }
+        },
     }
-    if (this.$route.query.ws) {
-      ddata.aa = this.$route.query.ws;
-    }
-    if (this.$route.query.sf) {
-      ddata.bb = this.$route.query.sf;
-    }
-    return ddata;
-  },
-  computed: {
-  },
-  mounted() {
-  },
-  watch: {
-      cc(a, b) {
-          this.updateUrl();
-      },
-      bb(a, b) {
-          this.updateUrl();
-      },
-      aa(a, b) {
-          this.updateUrl();
-      }
-  },
-  methods: {
-      updateUrl() {
-          router.push({
-              path: '/',
-              query: {
-                  bb: this.bb,
-                  aa: this.aa,
-                  cc: this.cc
-              }
-          })
-      },
-    allData() {
-      return this;
-    },
-  }
-}
 </script>
 
 <template>
-  <div>
-    <span>Field AA:</span>&nbsp;&nbsp;
-    <input id="OnePointFive" type="radio" :value="1.5" v-model="aa">
-    <label for="OnePointFive">1.5</label>
-    &nbsp;&nbsp;
-    <input id="Two" type="radio" :value="2" v-model="aa">
-    <label for="Two">2</label>
-    &nbsp;&nbsp;
-    <input id="Ten" type="radio" :value="10" v-model="aa">
-    <label for="Ten">10</label>
-    &nbsp;&nbsp;
-    <input id="RT" type="radio" :value="'realtime'" v-model="aa">
-    <label for="RT">RT</label>
-    <br>
-    <span>Scale Factor:</span>&nbsp;&nbsp;
-    <input id="scalep1" type="radio" :value=".1" v-model="bb">
-    <label for="scalep1">.1</label>
-    &nbsp;&nbsp;
-    <input id="scalep5" type="radio" :value=".5" v-model="bb">
-    <label for="scalep5">.5</label>
-    &nbsp;&nbsp;
-    <input id="scale1" type="radio" :value="1" v-model="bb">
-    <label for="scale1">1</label>
-    &nbsp;&nbsp;
-    <input id="scale5" type="radio" :value="5" v-model="bb">
-    <label for="scale5">5</label>
-    &nbsp;&nbsp;
-    <input id="scale10" type="radio" :value="10" v-model="bb">
-    <label for="scale10">10</label>
-    &nbsp;&nbsp;
-    <input id="scale50" type="radio" :value="50" v-model="bb">
-    <label for="scale50">50</label>
-    &nbsp;&nbsp;
-    <input id="scale100" type="radio" :value="100" v-model="bb">
-    <label for="scale100">100</label>
-  </div>
+    <div>
+        <span>Field AA:</span>&nbsp;&nbsp;
+        <div class="input" v-for="(input, i) in aaOptions" :key="'aa' + i">
+          <input :id="input.id" type="radio" name="aaoption" :value="input.value" @click="updateAA(input.value)" :checked="input.value == aa"/>
+          <label :for="input.id">{{ input.label }}</label>
+          &nbsp;&nbsp;
+        </div>
+        <br />
+        <span>Scale Factor:</span>&nbsp;&nbsp;
+        <div class="input" v-for="(input, i) in bbOptions" :key="'bb' + i">
+          <input :id="input.id" type="radio" name="bboption" :value="input.value" @click="updateBB(input.value)" :checked="input.value == bb"/>
+          <label :for="input.id">{{ input.label }}</label>
+          &nbsp;&nbsp;
+        </div>
+    </div>
+    <br />
 
-  <br>
-
-  <div>
-    <pre>
+    <div>
+        <pre>
           data:
-          {{ JSON.stringify(allData(), null, 3) }}
-    </pre>
-  </div>
+          {{ JSON.stringify(query, null, 3) }}
+    </pre
+        >
+    </div>
 </template>
 
 <style scoped>
+  .input{
+    display: inline-block;
+  }
 </style>

@@ -1,44 +1,59 @@
-import {mount} from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import vsm from '@/vsm.vue'
+import { createRouter, createWebHistory } from 'vue-router'
+
+const routes = [
+    {
+        path: '/',
+        component: vsm,
+    },
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: routes,
+})
 
 describe('test vsm component', () => {
     it('updates query params when radio buttons are clicked', async () => {
-        const wrappedTestComponent = mount(vsm, {
-            global: {
-                mocks: {
-                    $route: {
-                        query: {
-                            aa: '1.5',
-                            bb: '1',
-                            cc: 'hello',
-                        },
-                    },
-                    $router: {
-                        push: jest.fn(),
-                    },
-                },
+        router.push({
+            path: '/',
+            query: {
+                bb: 1.5,
+                aa: 1,
+                cc: 'hello',
             },
         })
 
-        expect(wrappedTestComponent.vm.bb).toBe(1)
-        expect(wrappedTestComponent.vm.aa).toBe('1.5')
-        expect(wrappedTestComponent.vm.cc).toBe('hello')
+        await router.isReady()
 
-        wrappedTestComponent.find('#Two').trigger('click');
-        wrappedTestComponent.find('#scale5').trigger('click')
+        const wrapper = mount(vsm, {
+            global: {
+                plugins: [router]
+            },
+        })
 
-        setTimeout(() => {
-            expect(wrappedTestComponent.vm.bb).toBe('5')
-            expect(wrappedTestComponent.vm.aa).toBe('2')
+        //validate routes
+        expect(router.currentRoute.value.query.bb.toString()).toBe('1.5')
+        expect(router.currentRoute.value.query.aa.toString()).toBe('1')
+        expect(router.currentRoute.value.query.cc.toString()).toBe('hello')
 
-            expect(wrappedTestComponent.vm.$router.push).toHaveBeenCalledWith({
-                path: '/',
-                query: {
-                    bb: '5',
-                    aa: '1.5',
-                    cc: 'hello',
-                },
-            })
-        }, 1000)
+        //validate data fields
+        expect(wrapper.vm.aa.toString()).toBe('1')
+        expect(wrapper.vm.bb.toString()).toBe('1.5')
+        expect(wrapper.vm.cc.toString()).toBe('hello')
+
+        //trigger button clicks
+        await wrapper.find('#Two').trigger('click')
+        expect(wrapper.vm.aa.toString()).toBe('2')
+
+        await wrapper.find('#scale5').trigger('click')
+        expect(wrapper.vm.bb.toString()).toBe('5')
+
+        await wrapper.vm.updateUrl().then(() => {
+            expect(router.currentRoute.value.query.bb.toString()).toBe('5')
+            expect(router.currentRoute.value.query.aa.toString()).toBe('2')
+            expect(router.currentRoute.value.query.cc.toString()).toBe('hello')
+        })
     })
 })
