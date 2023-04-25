@@ -1,7 +1,7 @@
 module.exports = {
     moduleFileExtensions: ['vue', 'js', 'json', 'jsx'],
     moduleNameMapper: {
-      "^@/(.*)$": "<rootDir>/$1"
+      "^@/(.*)$": "<rootDir>/src/$1"
     },
     testEnvironment: 'jsdom',
     transform: {
